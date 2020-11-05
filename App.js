@@ -25,6 +25,7 @@ import RNSoundLevel from 'react-native-sound-level';
 
 import NotificationsController from './NotificationsController';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const styles = StyleSheet.create({
@@ -67,6 +68,7 @@ class App extends Component {
 
   setMaxVolume = (data) => {  
     this.setState({maxVolume:parseInt(data.nativeEvent.text),showTextInput:false});
+    this.storeData(data.nativeEvent.text);
   }
 
   selectColor(){
@@ -98,6 +100,25 @@ class App extends Component {
 
   }
 
+  storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('@max_volume', value)
+    } catch (e) {
+      // saving error
+    }
+  }
+
+  getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@max_volume')
+      if(value !== null) {
+        this.setState({maxVolume:parseInt(value)});
+      }
+    } catch(e) {
+      // error reading value
+    }
+  }
+
   state: { 
     currentRaw: int,
     maxVolume: int,
@@ -121,6 +142,7 @@ class App extends Component {
   } 
 
 componentDidMount() {
+  this.getData();
   RNSoundLevel.start();
   RNSoundLevel.onNewFrame = (data) => {
       if(this.state.runProgram){
@@ -215,15 +237,8 @@ componentWillUnmount() {
 
         <View style={this.selectColor()}/>  
 
-        <Text>{this.state.maxVolume}</Text>
-
         <Text style={styles.text}>{this.state.currentRaw}/{this.state.maxVolume}</Text> 
         <Text style={styles.text}>Latest highest: {this.getMaxVolume()}</Text> 
-
-        <Text>{this.state.currentDecibel}</Text>
-        <Text>{this.state.currentRaw}</Text>
-        <Text>{this.state.highestDecibel}</Text>
-        <Text>{this.state.highestRaw}</Text>
 
       <View style={{margin: '100%'}}>    
       </View>   
