@@ -13,7 +13,7 @@ const Controller = {
     });
   },
 
-  schedule(opts) {
+  notify(opts) {
     PushNotification.localNotification(opts);
   }
 }

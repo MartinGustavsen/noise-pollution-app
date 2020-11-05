@@ -65,9 +65,8 @@ class App extends Component {
     return this.state.currentRaw/this.state.maxVolume;
   }
 
-  setMaxVolume = (data) => {
-  
-  this.setState({maxVolume:parseInt(data.nativeEvent.text),showTextInput:false});
+  setMaxVolume = (data) => {  
+    this.setState({maxVolume:parseInt(data.nativeEvent.text),showTextInput:false});
   }
 
   selectColor(){
@@ -86,12 +85,17 @@ class App extends Component {
       return 0;
     }
   }  
+
+  isCurrentLoud(){
+    return this.state.currentRaw>=this.state.maxVolume;
+  }
+
   isNoisePollution(seconds){
+    let isCurrentlyLoud = this.isCurrentLoud();
     let currentTime = new Date();    
     let lastSeconds = new Date(); lastSeconds.setSeconds(currentTime.getSeconds()-seconds);
-    let lastNoises = this.state.lastMinuteSounds.filter(x => x.time_stamp > lastSeconds && x.value<this.state.maxVolume).length <= 0 && this.state.currentLoud;
-    return lastNoises.length <= 0 && this.state.currentLoud;
-    // console.log(this.state.lastMinuteSounds.reduce((prev, current) => (prev.value > current.value) ? prev : current));
+    return this.state.lastMinuteSounds.filter(x => x.time_stamp > lastSeconds && x.value<this.state.maxVolume).length <= 0 && isCurrentlyLoud;
+
   }
 
   state: { 
@@ -99,7 +103,7 @@ class App extends Component {
     maxVolume: int,
     showTextInput: bool,
     lastMinuteSounds:array,
-    currentLoud: bool,
+    notifySent: bool,
   } 
 
   constructor(props: Props) { 
@@ -109,7 +113,7 @@ class App extends Component {
       maxVolume:3000,
       showTextInput:false,
       lastMinuteSounds:[],
-      currentLoud:false
+      notifySent:false
     }; 
     NotificationsController.init();
   } 
@@ -123,14 +127,22 @@ componentDidMount() {
 
     this.setState({
       currentRaw:data.rawValue,
-      lastMinuteSounds : this.state.lastMinuteSounds.filter(x => x.time_stamp > minuteAgo),
-      currentLoud:this.state.currentRaw>=this.state.maxVolume
+      lastMinuteSounds : this.state.lastMinuteSounds.filter(x => x.time_stamp > minuteAgo)
       });
-
-    if(this.isNoisePollution(3))
+      
+    if(this.isNoisePollution(3) && !this.state.notifySent)
     {
 
-      // NotificationsController.schedule({message:'message!'});
+      // NotificationsController.notify({message:'message!'});
+        this.setState({
+          notifySent:true
+        });
+    }
+
+    if(this.state.notifySent && !this.isCurrentLoud()){
+         this.setState({
+          notifySent:false
+        });
     }
   }
 }
