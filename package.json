@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-community/push-notification-ios": "^1.7.1",
     "flow-bin": "^0.137.0",
     "react": "16.13.1",

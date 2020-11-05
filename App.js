@@ -104,6 +104,7 @@ class App extends Component {
     showTextInput: bool,
     lastMinuteSounds:array,
     notifySent: bool,
+    runProgram: bool,
   } 
 
   constructor(props: Props) { 
@@ -113,7 +114,8 @@ class App extends Component {
       maxVolume:3000,
       showTextInput:false,
       lastMinuteSounds:[],
-      notifySent:false
+      notifySent:false,
+      runProgram:false
     }; 
     NotificationsController.init();
   } 
@@ -121,29 +123,32 @@ class App extends Component {
 componentDidMount() {
   RNSoundLevel.start();
   RNSoundLevel.onNewFrame = (data) => {
-      let currentTime = new Date();
-      let minuteAgo = new Date(); minuteAgo.setMinutes(currentTime.getMinutes()-1);
-      this.state.lastMinuteSounds.push({value:this.state.currentRaw,time_stamp:currentTime});
+      if(this.state.runProgram){
+        let currentTime = new Date();
+        let minuteAgo = new Date(); minuteAgo.setMinutes(currentTime.getMinutes()-1);
+        this.state.lastMinuteSounds.push({value:this.state.currentRaw,time_stamp:currentTime});
 
-    this.setState({
-      currentRaw:data.rawValue,
-      lastMinuteSounds : this.state.lastMinuteSounds.filter(x => x.time_stamp > minuteAgo)
-      });
-      
-    if(this.isNoisePollution(3) && !this.state.notifySent)
-    {
-
-      // NotificationsController.notify({message:'message!'});
         this.setState({
-          notifySent:true
-        });
-    }
+          currentRaw:data.rawValue,
+          lastMinuteSounds : this.state.lastMinuteSounds.filter(x => x.time_stamp > minuteAgo)
+          });
+          
+        if(this.isNoisePollution(3) && !this.state.notifySent)
+        {
 
-    if(this.state.notifySent && !this.isCurrentLoud()){
-         this.setState({
-          notifySent:false
-        });
-    }
+          // NotificationsController.notify({message:'message!'});
+            this.setState({
+              notifySent:true
+            });
+        }
+
+        if(this.state.notifySent && !this.isCurrentLoud()){
+            this.setState({
+              notifySent:false
+            });
+        }
+      }
+
   }
 }
 componentWillUnmount() {
@@ -161,6 +166,16 @@ componentWillUnmount() {
        
 
         <View style={styles.buttonSection}> 
+          <View style={styles.row_space}/>  
+          <Button             
+            title={this.state.runProgram ? "Stop!" : "Start!"}
+            onPress={
+              (data) => {
+                this.setState({runProgram:!this.state.runProgram})
+              }
+          } />
+          <View style={styles.row_space}/>  
+          <View style={styles.row_space}/>  
           <View style={styles.row_space}/>  
           <Button 
             style={styles.button} 
