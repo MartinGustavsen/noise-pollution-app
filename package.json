@@ -14,7 +14,6 @@
     "flow-bin": "^0.137.0",
     "react": "16.13.1",
     "react-native": "0.63.3",
-    "react-native-audio": "^4.3.0",
     "react-native-push-notification": "3.1.1",
     "react-native-sound-level": "^1.1.5"
   },

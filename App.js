@@ -23,7 +23,6 @@ import {
 
 import RNSoundLevel from 'react-native-sound-level';
 
-
 import NotificationsController from './NotificationsController';
 
 
