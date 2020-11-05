@@ -1,0 +1,11 @@
+rootProject.name = 'voice_level'
+
+include ':react-native-sound-level'
+project(':react-native-sound-level').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-sound-level/android')
+include ':react-native-audio'
+project(':react-native-audio').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-audio/android')
+apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+include ':app'
+
+include ':react-native-push-notification'
+project(':react-native-push-notification').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-push-notification/android')
