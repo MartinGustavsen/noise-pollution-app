@@ -3,12 +3,6 @@
  * https://github.com/facebook/react-native
  * @format
  * @flow strict-local
-
-npx react-native run-android
-
- TODO:
-Storage current MAX
-
  */
 import React, { Component } from 'react';
 import {
@@ -158,7 +152,7 @@ componentDidMount() {
         if(this.isNoisePollution(3) && !this.state.notifySent)
         {
 
-          // NotificationsController.notify({message:'message!'});
+            NotificationsController.notify({message:'message!'});
             this.setState({
               notifySent:true
             });
