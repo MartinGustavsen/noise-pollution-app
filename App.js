@@ -94,6 +94,18 @@ class App extends Component {
 
   }
 
+  toggleRunprogram = (data) => {
+                this.setState({runProgram:!this.state.runProgram})
+
+                if(this.state.runProgram){
+                  this.setState({
+                          lastMinuteSounds:[],
+                          notifySent:false,
+                  });
+                }
+
+              }
+
   storeData = async (value) => {
     try {
       await AsyncStorage.setItem('@max_volume', value)
@@ -151,7 +163,6 @@ componentDidMount() {
           
         if(this.isNoisePollution(3) && !this.state.notifySent)
         {
-
             NotificationsController.notify({message:'message!'});
             this.setState({
               notifySent:true
@@ -186,9 +197,7 @@ componentWillUnmount() {
           <Button             
             title={this.state.runProgram ? "Stop!" : "Start!"}
             onPress={
-              (data) => {
-                this.setState({runProgram:!this.state.runProgram})
-              }
+              this.toggleRunprogram
           } />
           <View style={styles.row_space}/>  
           <View style={styles.row_space}/>  
@@ -210,11 +219,7 @@ componentWillUnmount() {
                 this.setState({showTextInput:true});
               }
               }/>
-          <View style={styles.row_space}/>  
-           {/* <Button style={styles.button} title={'Local Push Notification'} onPress={
-             (data) => {
-               console.log('BTN');
-               }} /> */}
+          <View style={styles.row_space}/>
           <View style={styles.row_space}/>  
 
              {this.state.showTextInput ? (
